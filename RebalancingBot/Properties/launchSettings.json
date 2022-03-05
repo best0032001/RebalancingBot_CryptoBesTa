@@ -14,8 +14,6 @@
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "API_KEY": "619e859b573c5d734ae7e01a8318d078",
-        "API_SECRET": "1c50a75456dcef9a2926eab4f755ad17",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
