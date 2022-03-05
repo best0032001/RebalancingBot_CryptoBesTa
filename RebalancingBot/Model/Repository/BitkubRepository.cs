@@ -32,7 +32,7 @@ namespace RebalancingBot.Model.Repository
         {
             ResponseBalancesModel responseBalancesModel = null;
 
-            HttpClient _client = new HttpClient();
+            HttpClient _client = _clientFactory.CreateClient();
             TSModel tSModel = await getServerTime();
             Payload payload = new Payload();
             payload.ts = tSModel.ts;
@@ -51,7 +51,7 @@ namespace RebalancingBot.Model.Repository
 
         public async Task<TSModel> getServerTime()
         {
-            HttpClient _client = new HttpClient();
+            HttpClient _client =_clientFactory.CreateClient();
             String API = API_HOST + "/api/servertime";
             var response = await _client.GetAsync(API);
             response.EnsureSuccessStatusCode();
