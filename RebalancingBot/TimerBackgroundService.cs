@@ -11,25 +11,30 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RebalancingBot.Model.Interface;
+using RebalancingBot.Model.Repository;
 namespace RebalancingBot
 {
     public class TimerBackgroundService : BackgroundService
     {
         private Timer _timer;
         private readonly IHttpClientFactory _clientFactory;
-        public TimerBackgroundService(IHttpClientFactory clientFactory)
+        private IBitkubRepository _bitkubRepository;
+
+        public TimerBackgroundService(IHttpClientFactory clientFactory, IBitkubRepository bitkubRepository)
         {
             _clientFactory = clientFactory;
+            _bitkubRepository = bitkubRepository;
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            Console.WriteLine("test");
+             _bitkubRepository.Worker();
         }
     }
 }

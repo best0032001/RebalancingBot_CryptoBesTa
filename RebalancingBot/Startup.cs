@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RebalancingBot.Model.Interface;
+using RebalancingBot.Model.Repository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -77,6 +79,7 @@ namespace RebalancingBot
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+            services.AddSingleton<IBitkubRepository, BitkubRepository>();
             services.AddHostedService<TimerBackgroundService>();
         }
 
