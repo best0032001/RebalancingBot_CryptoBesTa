@@ -16,16 +16,19 @@ namespace RebalancingBot.Model.Repository
         private String API_HOST = "https://api.bitkub.com";
         private String API_KEY = "-";
         private String API_SECRET = "-";
-        public BitkubRepository(IHttpClientFactory clientFactory)
+        private ILineNotiRepository _lineNotiRepository;
+        public BitkubRepository(IHttpClientFactory clientFactory, ILineNotiRepository lineNotiRepository)
         {
             _clientFactory = clientFactory;
             API_KEY = Environment.GetEnvironmentVariable("API_KEY");
             API_SECRET = Environment.GetEnvironmentVariable("API_SECRET");
+            _lineNotiRepository = lineNotiRepository;
         }
         public async Task Worker()
         {
             Console.WriteLine("Start");
             ResponseBalancesModel responseBalancesModel = await getBalances();
+            await _lineNotiRepository.sendLineNoti(getMessageBalances(responseBalancesModel));
         }
 
         public async Task<ResponseBalancesModel> getBalances()
@@ -51,7 +54,7 @@ namespace RebalancingBot.Model.Repository
 
         public async Task<TSModel> getServerTime()
         {
-            HttpClient _client =_clientFactory.CreateClient();
+            HttpClient _client = _clientFactory.CreateClient();
             String API = API_HOST + "/api/servertime";
             var response = await _client.GetAsync(API);
             response.EnsureSuccessStatusCode();
@@ -72,6 +75,14 @@ namespace RebalancingBot.Model.Repository
             byte[] bytes = cryptographer.ComputeHash(messageBytes);
             String sig = BitConverter.ToString(bytes).Replace("-", "").ToLower();
             return sig;
+        }
+
+        public String getMessageBalances(ResponseBalancesModel responseBalancesModel)
+        {
+            Double THB = responseBalancesModel.result.THB.available + responseBalancesModel.result.THB.reserved;
+            Double KUB = responseBalancesModel.result.KUB.available + responseBalancesModel.result.KUB.reserved;
+            String message = "THB:"+ THB +" KUB:"+ KUB;
+            return message;
         }
     }
 }

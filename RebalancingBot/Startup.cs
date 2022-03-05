@@ -79,6 +79,7 @@ namespace RebalancingBot
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+            services.AddSingleton<ILineNotiRepository, LineNotiRepository>();
             services.AddSingleton<IBitkubRepository, BitkubRepository>();
             services.AddHostedService<TimerBackgroundService>();
         }
