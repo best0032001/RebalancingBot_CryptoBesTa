@@ -3,7 +3,9 @@ RebalancingBot_CryptoBesTa เป็น Project Open source สำหรับ �
 
 **feature**
 V 1.0
+
 1 ตั้งเวลาBotที่ Timer ที่อยู่ใน BackgroundService 
+
 2 แจ้งเตือนยอดรวมไปที่ Line Notify
 
 **Tech Stack**
@@ -19,10 +21,18 @@ V 1.0
 
 
 **Deploy**
+
 1 add env file ก่อน Run Docker-compose up -d --build
+
 2 Edit  env file กำหนดค่า 3 ตัว
+
 API_KEY=xxx
+
 API_SECRET=xxx
+
 LINE_TOKEN=xxx
+
 3 Run Docker-compose up -d --build
+
+
 
