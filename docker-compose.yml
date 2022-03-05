@@ -1,0 +1,15 @@
+version: '3.4'
+services:
+        bot:
+                build:
+                        context: RebalancingBot
+                container_name: bot
+                ports:
+                        - "98:80"
+                restart: always
+                env_file:
+                        - .env
+                environment:
+                        - TZ=Asia/Bangkok
+
+
