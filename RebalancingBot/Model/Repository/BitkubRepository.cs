@@ -28,7 +28,8 @@ namespace RebalancingBot.Model.Repository
         {
             Console.WriteLine("Start");
             ResponseBalancesModel responseBalancesModel = await getBalances();
-            await _lineNotiRepository.sendLineNoti(getMessageBalances(responseBalancesModel));
+            ResponseMarketBidModel responseMarketBidModel = await getMarketBids("THB_KUB");
+            await _lineNotiRepository.sendLineNoti(getMessageBalances(responseBalancesModel, responseMarketBidModel));
         }
 
         public async Task<ResponseBalancesModel> getBalances()
@@ -50,6 +51,19 @@ namespace RebalancingBot.Model.Repository
             var responseString = await response.Content.ReadAsStringAsync();
             responseBalancesModel = JsonConvert.DeserializeObject<ResponseBalancesModel>(responseString);
             return responseBalancesModel;
+        }
+
+        public async Task<ResponseMarketBidModel> getMarketBids(String sym)
+        {
+            ResponseMarketBidModel responseMarketBidModel = null;
+
+            HttpClient _client = new HttpClient();
+            String API = API_HOST + "/api/market/bids?sym=" + sym + "&lmt=1";
+            var response = await _client.GetAsync(API);
+            response.EnsureSuccessStatusCode();
+            String responseString = await response.Content.ReadAsStringAsync();
+            responseMarketBidModel = JsonConvert.DeserializeObject<ResponseMarketBidModel>(responseString);
+            return responseMarketBidModel;
         }
 
         public async Task<TSModel> getServerTime()
@@ -77,11 +91,14 @@ namespace RebalancingBot.Model.Repository
             return sig;
         }
 
-        public String getMessageBalances(ResponseBalancesModel responseBalancesModel)
+        public String getMessageBalances(ResponseBalancesModel responseBalancesModel, ResponseMarketBidModel responseMarketBidModel)
         {
             Double THB = responseBalancesModel.result.THB.available + responseBalancesModel.result.THB.reserved;
             Double KUB = responseBalancesModel.result.KUB.available + responseBalancesModel.result.KUB.reserved;
-            String message = "THB:"+ THB +" KUB:"+ KUB;
+
+            Double SUMKUB = KUB * responseMarketBidModel.result[0][3];
+            Double Total = THB + SUMKUB;
+            String message = "TOTAL:" + Total + "\n THB:" + THB + "\n KUB:" + SUMKUB;
             return message;
         }
     }

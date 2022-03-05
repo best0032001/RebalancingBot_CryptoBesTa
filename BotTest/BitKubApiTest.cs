@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using RebalancingBot.Model;
+using RebalancingBot.Model.BitkubModel;
 
 namespace BotTest
 {
@@ -53,7 +54,18 @@ namespace BotTest
             Assert.IsTrue((int)response.StatusCode == 200);
 
         }
-       
+        [TestMethod]
+        public async Task TestMarketBids()
+        {
+            HttpClient _client = new HttpClient();
+            String API = API_HOST + "/api/market/bids?sym=THB_KUB&lmt=1";
+            var response = await _client.GetAsync(API);
+            response.EnsureSuccessStatusCode();
+            String responseString = await response.Content.ReadAsStringAsync();
+            ResponseMarketBidModel responseMarketBidModel = JsonConvert.DeserializeObject<ResponseMarketBidModel>(responseString);
+            Assert.IsTrue((int)response.StatusCode == 200);
+
+        }
 
     }
 }

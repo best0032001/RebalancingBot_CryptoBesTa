@@ -19,7 +19,6 @@ namespace RebalancingBot.Model.Repository
         }
         public async Task sendLineNoti(string message)
         {
-
             String lineURL = "https://notify-api.line.me/api/notify";
             var postData = new Dictionary<string, string>
             {

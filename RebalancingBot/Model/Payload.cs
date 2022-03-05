@@ -10,4 +10,5 @@ namespace RebalancingBot.Model
         public String sig { get; set; }
         public Int32 ts { get; set; }
     }
+
 }
